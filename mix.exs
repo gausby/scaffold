@@ -12,6 +12,7 @@ defmodule Scaffold.Mixfile do
     [app: :scaffold,
      version: @version,
      description: description,
+     package: package,
      elixir: "~> 1.0",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
