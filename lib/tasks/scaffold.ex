@@ -20,10 +20,19 @@ defmodule Mix.Tasks.Scaffold do
       [] ->
         Mix.raise "Expected path to be given, please use `mix scaffold PATH`"
       [path | _rest] ->
+        check_for_valid_git_repository!(scaffold_dir!)
+
         repo = Gitex.Git.open(scaffold_dir!)
         branch = opts[:template] || "master"
-        content = Gitex.get(branch, repo, "/")
 
+        # Gitex will throw an FunctionClauseError if the repo is empty
+        content = try do
+          Gitex.get(branch, repo, "/")
+        rescue
+          FunctionClauseError -> nil
+        end
+        if content == nil, do: Mix.raise "Template seems to be empty"
+        
         File.mkdir_p!(path)
         File.cd!(path, fn ->
           walk_tree(content, {"/", repo, branch}, %{})
@@ -45,6 +54,12 @@ defmodule Mix.Tasks.Scaffold do
   # Get the template folder. Assume it is ~/.scaffold
   defp scaffold_dir!, do: Path.join(System.user_home!, ".scaffold")
 
+  defp check_for_valid_git_repository!(dir) do
+    unless (File.dir?(dir) && File.dir?(Path.join(dir, ".git"))) do
+      Mix.raise "Please create a .scaffold-folder with a git repository in your home dir"
+    end
+  end
+  
   # Walk the .git folder and fetch the names and file paths of the given branch.
   defp walk_tree(node, connection, acc) when is_list(node) do
     Enum.reduce(node, acc, fn (node, acc) -> walk_tree(node, connection, acc) end)
