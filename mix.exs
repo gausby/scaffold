@@ -24,7 +24,10 @@ defmodule Scaffold.Mixfile do
   end
 
   defp deps do
-    [{:gitex, "~> 0.1.0"}]
+    [
+        {:gitex, "~> 0.1.0"},
+        {:configparser_ex, "~> 0.2.0"}
+    ]
   end
 
   defp package do

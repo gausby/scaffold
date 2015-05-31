@@ -1,1 +1,2 @@
-%{"gitex": {:hex, :gitex, "0.1.0"}}
+%{"configparser_ex": {:hex, :configparser_ex, "0.2.0"},
+  "gitex": {:hex, :gitex, "0.1.0"}}

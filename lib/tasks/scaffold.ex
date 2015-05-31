@@ -20,9 +20,11 @@ defmodule Mix.Tasks.Scaffold do
       [] ->
         Mix.raise "Expected path to be given, please use `mix scaffold PATH`"
       [path | _rest] ->
-        check_for_valid_git_repository!(scaffold_dir!)
+        config = get_git_config!
+        scaffold_dir = get_in(config, ["scaffold", "dir"])
+        check_for_valid_git_repository!(scaffold_dir)
 
-        repo = Gitex.Git.open(scaffold_dir!)
+        repo = Gitex.Git.open(scaffold_dir)
         branch = opts[:template] || "master"
 
         # Gitex will throw an FunctionClauseError if the repo is empty
@@ -51,8 +53,19 @@ defmodule Mix.Tasks.Scaffold do
     end
   end
 
-  # Get the template folder. Assume it is ~/.scaffold
-  defp scaffold_dir!, do: Path.join(System.user_home!, ".scaffold")
+  # read the user settings from the ~/.gitconfig, raise if it does not exist
+  defp get_git_config! do
+    file_name = ".gitconfig"
+    gitconfig = System.user_home! |> Path.join(file_name)
+    if File.exists?(gitconfig) do
+      case ConfigParser.parse_file(gitconfig) do
+        {:ok, config} -> config
+        _ -> Mix.raise "Could not read #{file_name} in #{System.user_home!}"
+      end
+    else
+      Mix.raise "A #{file_name} file could not be found in #{System.user_home!}"
+    end
+  end
 
   defp check_for_valid_git_repository!(dir) do
     unless (File.dir?(dir) && File.dir?(Path.join(dir, ".git"))) do

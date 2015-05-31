@@ -12,19 +12,27 @@ As of yet it is able to create a new project based on data in a local Git reposi
 Flags
 -----
 
-`--template name` will pick the branch *name* as the template.
+`--template name` will pick the branch *name* as the template. This will default to the *master* branch if omitted.
 
 
-Setting up the Git repo
------------------------
-Create a `.scaffold` folder in your home directory and initialize a git repository in it. Alternatively a Git repository could be initialized on a site like Github and cloned into the *.scaffold* directory.
+Setting up the template repo
+----------------------------
+First you will need a Git repository to store your templates. Create one by using `git init` or start one on a site like Github and clone it to your machine. Fill this repository with the files and folder structure you need for your project templates.
 
-`mix scaffold` will look in this folder and use master as its template unless the `--template` flag has been set, as described in the *Flags*-section.
+Then you will need to tell scaffold where to look for your newly created template folder. Let us assume that `~/.scaffold` was used as the template folder, and that we have a working Git repository in this folder. Scaffold uses the *.gitconfig*-file to store its settings under the *scaffold* section, so add the repo to the settings with the following command.
+
+```shell
+git config --global scaffold.dir ~/.scaffold
+```
+
+`mix scaffold` will now look in this folder and use the master branch as its template unless the `--template` flag has been set, as described in the *Flags*-section.
 
 
 Dependencies
 ------------
 This project uses the awesome [Gitex](https://github.com/awetzel/gitex) project by [Arnaud Wetzel](https://github.com/awetzel/) (released under the MIT License (MIT)) to communicate with the Git repository.
+
+We use the [ConfigParser](https://github.com/easco/configparser_ex) project by [Scott Thompson](https://github.com/easco) to read the content of the users *~/.gitconfig*-file. ConfigParser is released under the BSD license.
 
 
 License
