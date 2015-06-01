@@ -9,11 +9,14 @@ This is work in progress. Stuff will change radically from version to version. T
 As of yet it is able to create a new project based on data in a local Git repository. Planned features include placeholders and other neat stuff. Please check the projects Github issues and add feature- and pull-requests. Thanks.
 
 
-Flags
------
+Commands
+--------
 
-`--template name` will pick the branch *name* as the template. This will default to the *master* branch if omitted.
+`mix scaffold PATH`
 
+  * `--template name` will pick the branch *name* as the template. This will default to the *master* branch if omitted.
+
+`mix scaffold.version` will print the current version.
 
 Setting up the template repo
 ----------------------------
