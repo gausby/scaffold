@@ -22,6 +22,15 @@ defmodule Mix.Tasks.Scaffold do
       [path | _rest] ->
         config = get_git_config!
         scaffold_dir = get_in(config, ["scaffold", "dir"])
+
+        if scaffold_dir == nil, do: Mix.raise """
+        No template dir found. Please add one with:
+
+            git config --global scaffold.dir PATH_TO_TEMPLATE_DIR
+
+        Read the documentation for more info.
+        """
+
         check_for_valid_git_repository!(scaffold_dir)
 
         repo = Gitex.Git.open(scaffold_dir)
